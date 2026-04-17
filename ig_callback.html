@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IG Auth Callback – Tech Media Publisher</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:640px;margin:80px auto;padding:0 20px;color:#222}
+h1{font-size:1.6rem}
+.box{background:#f4f4f6;border:1px solid #e1e1e4;border-radius:8px;padding:16px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+button{font-size:1rem;padding:8px 16px;border-radius:6px;border:1px solid #0070f3;background:#0070f3;color:white;cursor:pointer}
+button:hover{background:#0058c4}
+.err{color:#b00020}
+.muted{color:#777;font-size:0.9rem}
+</style>
+</head>
+<body>
+<h1>Instagram / Meta Authorization Callback</h1>
+<p class="muted">Copy the authorization code below and paste it into your terminal.</p>
+
+<div id="content">Reading parameters...</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
+const state = params.get("state");
+const error = params.get("error");
+const errorReason = params.get("error_reason");
+const errorDesc = params.get("error_description");
+
+const content = document.getElementById("content");
+
+if (error) {
+  content.innerHTML = `<p class="err"><strong>Error:</strong> ${error}</p>` +
+    (errorReason ? `<p class="err">Reason: ${errorReason}</p>` : "") +
+    (errorDesc ? `<p class="err">${errorDesc}</p>` : "");
+} else if (code) {
+  content.innerHTML = `
+    <p><strong>Code</strong></p>
+    <div class="box" id="code">${code}</div>
+    <button onclick="navigator.clipboard.writeText(document.getElementById('code').textContent); this.textContent='Copied'">Copy code</button>
+    ${state ? `<p class="muted">state: ${state}</p>` : ""}
+  `;
+} else {
+  content.innerHTML = `<p class="err">No code in URL. Check that you reached this page via the Meta OAuth redirect.</p>`;
+}
+</script>
+</body>
+</html>
